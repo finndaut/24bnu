@@ -1,5 +1,5 @@
 import numpy as np
-from matplotlib import pyplot
+import matplotlib.pyplot as plt
 
 j_range = np.arange(8) + 1
 n_range = 2 ** j_range
@@ -26,4 +26,10 @@ s_ret = s_vec(n_range)
 s_rev_ret = s_rev_vec(n_range)
 deviation = abs(s_ret - s_rev_ret)
 print(deviation)
+
+fig, ax = plt.subplots()
+
+ax.plot(n_range, deviation)
+
+fig.savefig('U01_2.pdf')
 
