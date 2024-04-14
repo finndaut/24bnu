@@ -25,4 +25,5 @@ s_rev_vec = np.vectorize(s_rev)
 s_ret = s_vec(n_range)
 s_rev_ret = s_rev_vec(n_range)
 deviation = abs(s_ret - s_rev_ret)
+print(deviation)
 
