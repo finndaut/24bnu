@@ -14,7 +14,7 @@ x_n = (c, c ** 2)
 for _ in nrange:
     coor_list.append(x_n)
     x_n = f(*x_n, a=9 / 10, b=10)
-#coor_list.append(x_n)
+
 norm_list = np.linalg.norm(coor_list, axis=1)
 
 fig, ax = plt.subplots()
