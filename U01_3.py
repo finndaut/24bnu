@@ -19,7 +19,7 @@ norm_list = np.linalg.norm(coor_list, axis=1)
 
 fig, ax = plt.subplots()
 
-ax.plot(nrange, norm_list)
+ax.semilogy(nrange, norm_list)
 
 fig.savefig('U01_3.pdf')
 
