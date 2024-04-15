@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 def f(x1, x2, a: float, b: float):
     ret1 = a * x1
-    ret2 = (b - a ** 2) * x1 ** 2 + b * x2
+    ret2 = -(b - a ** 2) * x1 ** 2 + b * x2
     return [ret1, ret2]
 
 
