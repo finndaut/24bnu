@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-j_range = np.arange(8) + 1
+j_range = np.arange(20) + 1
 n_range = 2 ** j_range
 
 
@@ -29,8 +29,7 @@ deviation_rev = abs(s_rev_ret - np.pi)
 
 fig, ax = plt.subplots()
 
-ax.loglog(n_range, deviation)
-ax.loglog(n_range, deviation_rev)
+ax.loglog(n_range, deviation, 'x')
+ax.loglog(n_range, deviation_rev, '+')
 
 fig.savefig('U01_2.pdf')
-

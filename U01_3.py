@@ -22,5 +22,3 @@ fig, ax = plt.subplots()
 ax.semilogy(nrange, norm_list)
 
 fig.savefig('U01_3.pdf')
-
-pass
