@@ -1,6 +1,4 @@
 import math
-
-import h5py.h5pl
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -16,7 +14,7 @@ def newton(x_val, x_range):
     for i in range(1, n_val):
         b_list[i, i:n_val] = np.diff(b_list[i - 1, i - 1:n_val]) / (x_range[i:n_val] - x_range[0:n_val - i])
         ret += b_list[i][i] * np.prod(x_val-x_range[0:i])
-    return ret
+    return b_list[n_val][n_val]
 
 
 def interpol(h, n):
@@ -27,25 +25,23 @@ def interpol(h, n):
 interpol = np.vectorize(interpol, excluded=[1])
 
 
-fig, ax = plt.subplots(6)
-
-for n in range(1, 7):
+def plot(n):
+    fig, ax = plt.subplots()
     h_list = []
     for j in range(0,9):
         h_list.append(10**(j - 8))
 
     if n % 2:
-        f_mid = (-1)**(n/2) * np.cos(x_mid)
-    else:
         f_mid = (-1)**((n+1)/2) * np.sin(x_mid)
-
+    else:
+        f_mid = (-1)**(n/2) * np.cos(x_mid)
+    print(bool(n % 2))
     p_range = interpol(h_list, n)
+    print(f_mid, p_range)
     error_mid = abs(p_range - f_mid)
-    ax[n-1].loglog(h_list, error_mid, label='p')
-
-fig.show()
-
+    ax.loglog(h_list, error_mid, label='n=%i' %n)
+    ax.set(xlabel='h', ylabel='$e_N$')
 
 
-
+plot(1)
 
