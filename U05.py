@@ -13,8 +13,7 @@ def newton(x_val, x_range):
     ret = b_list[0][0]
     for i in range(1, n_val):
         b_list[i, i:n_val] = np.diff(b_list[i - 1, i - 1:n_val]) / (x_range[i:n_val] - x_range[0:n_val - i])
-        ret += b_list[i][i] * np.prod(x_val-x_range[0:i])
-    return b_list[n_val][n_val]
+    return b_list[n_val-1][n_val-1] * np.prod(x_val-x_range[0:n_val-1])
 
 
 def interpol(h, n):
@@ -43,5 +42,5 @@ def plot(n):
     ax.set(xlabel='h', ylabel='$e_N$')
 
 
-plot(1)
+plot(2)
 
