@@ -1,9 +1,9 @@
 import numpy as np
 
-#A_arr = np.array([[0.4, 1.1, 3.1],
+# A_arr = np.array([[0.4, 1.1, 3.1],
 #                  [2, 5.6, 3.1],
 #                  [4, 0.15, 0.25]])
-#b_arr = np.array([7.5, 0.1, 4.45])
+# b_arr = np.array([7.5, 0.1, 4.45])
 
 
 
@@ -42,19 +42,15 @@ def lr_zerlegung(A_arr, b_arr, type):
             lij = R_arr[i_idx[i], k] / R_arr[i_idx[k], k]
             L_arr[i_idx[i], k] = lij
             R_arr[i_idx[i], k:] -= lij * R_arr[i_idx[k], k:]
-    print(R_arr[i_idx, :])
 
     L_arr[i_idx, :] += np.eye(i_dim)
-    print(L_arr[i_idx, :])
 
-    print(b_arr)
     x_arr = np.zeros_like(b_arr)
     x_arr[0] = b_arr[i_idx[0]]
     for i in range(1, i_dim):
         x_arr[i] = b_arr[i_idx[i]]
         x_arr[i] -= np.sum(L_arr[i_idx[i], :i] * x_arr[:i])
 
-    print(x_arr)
     y_arr = np.zeros_like(b_arr)
     y_arr[i_dim - 1] = x_arr[i_dim - 1] / R_arr[i_idx[i_dim - 1], i_dim - 1]
     for i in range(i_dim - 2, -1, -1):
