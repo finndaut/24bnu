@@ -7,8 +7,8 @@ def cholesky(matrix):
     g_arr[0, 0] = matrix[0, 0] ** (1/2)
     g_arr[1:, 0] = matrix[1:, 0] / matrix[0, 0] ** (1/2)
     for i in range(1, i_dim):
-        g_arr[i, i] = (matrix[i, i] - np.sum(matrix[i, 0:i]**2)) ** (1/2)
-        g_arr[i+1:, i] = (matrix[i+1:, i] - np.sum(matrix[i+1:, 0:i] * matrix[i, 0:i], axis=1)) / g_arr[i, i]
+        g_arr[i, i] = (matrix[i, i] - np.sum(g_arr[i, 0:i]**2)) ** (1/2)
+        g_arr[i+1:, i] = (matrix[i+1:, i] - np.sum(g_arr[i+1:, 0:i] * g_arr[i, 0:i], axis=1)) / g_arr[i, i]
     return g_arr
 
 
@@ -31,7 +31,7 @@ def pseudo_h(n, m, dim_m=2):
 pseudo_a = np.vectorize(pseudo_a)
 pseudo_h = np.vectorize(pseudo_h)
 
-
-a_mat = pseudo_a(*np.ogrid[0:3**2, 0:3**2], dim_m=3)
-g_mat = cholesky(a_mat)
-print(np.linalg.norm(a_mat-g_mat@(g_mat.T)))
+for dim in range(2,21):
+    a_mat = pseudo_a(*np.ogrid[0:dim**2, 0:dim**2], dim_m=dim)
+    g_mat = cholesky(a_mat)
+    print(np.linalg.norm(a_mat-g_mat@(g_mat.T)))
