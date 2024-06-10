@@ -32,6 +32,6 @@ pseudo_a = np.vectorize(pseudo_a)
 pseudo_h = np.vectorize(pseudo_h)
 
 for dim in range(2,21):
-    a_mat = pseudo_a(*np.ogrid[0:dim**2, 0:dim**2], dim_m=dim)
+    a_mat = pseudo_h(*np.ogrid[0:dim**2, 0:dim**2], dim_m=dim)
     g_mat = cholesky(a_mat)
-    print(np.linalg.norm(a_mat-g_mat@(g_mat.T)))
+    norm = np.linalg.norm(a_mat-g_mat@g_mat.T, ord=1)
