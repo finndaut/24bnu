@@ -35,7 +35,7 @@ h_func = np.vectorize(h_func)
 
 for dim in range(2, 21):
     print("dim = %i" % dim)
-    a_dens = h_func(*np.ogrid[0:dim ** 2, 0:dim ** 2], dim_m=dim)
+    a_dens = a_func(*np.ogrid[0:dim ** 2, 0:dim ** 2], dim_m=dim)
     a_diag = sparse.dia_matrix(a_dens)
     a_coor = sparse.coo_matrix(a_dens)
     print('a_dens       ', len(pickle.dumps(a_dens)))
