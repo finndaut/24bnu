@@ -64,21 +64,22 @@ jacobi_list = []
 gausseidel_list = []
 sor_list = []
 
-for k in range(1, 3):
+for k in range(1, 7):
     m = 2**k
     a_dens = a_func(*np.ogrid[0:m ** 2, 0:m ** 2], dim_m=m)
     h = 1 / (m+1)
     relax_par = 2 / (1 + np.sqrt(1-np.cos(h*np.pi)**2))
     b_vector = np.ones(m**2)
+    print(k, a_dens.size)
 
-    m_list.append(m)
-    jacobi_list.append(jacobi(a_dens, b_vector))
-    gausseidel_list.append(gausseidel(a_dens, b_vector))
-    sor_list.append(sor(a_dens, b_vector, relax_par))
+#     m_list.append(m)
+#     jacobi_list.append(jacobi(a_dens, b_vector))
+#     gausseidel_list.append(gausseidel(a_dens, b_vector))
+#     sor_list.append(sor(a_dens, b_vector, relax_par))
 
-fig, ax = plt.subplots()
-ax.semilogy(m_list, jacobi_list)
-ax.semilogy(m_list, gausseidel_list)
-ax.semilogy(m_list, sor_list)
-ax.set(xlabel='n', ylabel='Fehler')
+# fig, ax = plt.subplots()
+# ax.semilogy(m_list, jacobi_list)
+# ax.semilogy(m_list, gausseidel_list)
+# ax.semilogy(m_list, sor_list)
+# ax.set(xlabel='n', ylabel='Fehler')
 
