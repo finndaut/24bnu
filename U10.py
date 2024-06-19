@@ -1,6 +1,5 @@
 import numpy as np
-
-b_vector = np.ones(3**2)
+from scipy import sparse
 
 
 def norm(matrix, x_vector, b_vector):
@@ -13,11 +12,11 @@ def jacobi(matrix, b_vector):
     x_vector = np.ones_like(b_vector)
     while (norm(matrix, x_vector, b_vector) > 10**-8) and (k < 2*10**4):
         k += 1
-        x_temp = np.array(b_vector)
-        for i in range(len(x_vector)):
+        x_temp = b_vector.copy()
+        for i in range(len(b_vector)):
             x_temp[i] -= np.sum(
                 np.delete(
-                    matrix[i] * x_vector, i
+                    matrix[i,:] * x_vector, i
                 )
             )
             x_temp[i] /= matrix[i, i]
@@ -29,21 +28,42 @@ def jacobi(matrix, b_vector):
 
 def gausseidel(matrix, b_vector):
     k = 0
-    x_vector = np.zeros_like(b_vector)
+    x_vector = np.ones_like(b_vector)
     while (norm(matrix, x_vector, b_vector) > 10**-8) and (k < 2*10**4):
         k += 1
-        x_temp = np.array(b_vector)
-        for i in range(len(x_vector)):
+        x_temp = b_vector.copy()
+        for i in range(len(b_vector)):
             x_temp[i] -= np.sum(
-                matrix[i, :k] * x_temp[:k]
+                matrix[i, :i] * x_temp[:i]
             )
             x_temp[i] -= np.sum(
-                matrix[i, k+1:] * x_vector[k+1:]
+                matrix[i, i+1:] * x_vector[i+1:]
             )
             x_temp[i] /= matrix[i, i]
-        x_vector = x_temp
+        x_vector = x_temp.copy()
     print(norm(matrix, x_vector, b_vector), k)
-    return ...
+    return x_vector
+
+
+def sor(matrix, b_vector, relax_par):
+    k = 0
+    x_vector = np.ones_like(b_vector)
+    while (norm(matrix, x_vector, b_vector) > 10**-8) and (k < 2*10**4):
+        k += 1
+        x_temp = b_vector.copy()
+        for i in range(len(b_vector)):
+            x_temp[i] -= np.sum(
+                matrix[i, :i] * x_temp[:i]
+            )
+            x_temp[i] -= np.sum(
+                matrix[i, i+1:] * x_vector[i+1:]
+            )
+            x_temp[i] *= relax_par / matrix[i, i]
+            x_temp[i] += (1 - relax_par) * x_vector[i]
+        x_vector = x_temp.copy()
+    print(norm(matrix, x_vector, b_vector), k)
+    return x_vector
+
 
 def a_func(n, m, dim_m=2):
     if n == m:
@@ -52,12 +72,17 @@ def a_func(n, m, dim_m=2):
         ret = -1
     else:
         ret = 0
-    return np.float64(ret)
+    return ret
 
 
 a_func = np.vectorize(a_func)
-
-
-a_dens = a_func(*np.ogrid[0:3 ** 2, 0:3 ** 2], dim_m=3)
-gausseidel(a_dens, b_vector)
+for k in range(1, 3):
+    m = 2**k
+    a_dens = a_func(*np.ogrid[0:m ** 2, 0:m ** 2], dim_m=m)
+    h = 1 / (m+1)
+    relax_par = 2 / (1 + np.sqrt(1-np.cos(h*np.pi)**2))
+    b_vector = np.ones(m**2)
+    jacobi_vec = jacobi(a_dens, b_vector)
+    gausseidel_vec = gausseidel(a_dens, b_vector)
+    sor_vec = sor(a_dens, b_vector, relax_par)
 
