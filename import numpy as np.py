@@ -1,9 +1,10 @@
 import numpy as np
 
 def pqspecial(w):
+
     return max(
-        abs(-w+1/2+np.sqrt(w-3/4)),
-        abs(-w+1/2-np.sqrt(w-3/4))
+        np.linalg.norm(1-w+w**2/8 + w/2*np.sqrt(w**2/16-w+1)),
+        np.linalg.norm(1-w+w**2/8 - w/2*np.sqrt(w**2/16-w+1))
         )
 pqspecial = np.vectorize(pqspecial)
 
