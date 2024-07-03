@@ -3,44 +3,35 @@ from scipy import sparse
 
 
 def f_funct(y_arr, lambda_val):
-    n, m = y_arr.shape
-    ret_arr = sparse.lil_array((n, m))
-    ret_arr[0, 0] = -1
-    ret_arr[0, -1] = -1
-    for index in y_arr.nonzero():
-        if len(index):
-            i, j = index
-            y_val = y_arr[i, j]
-            ret_arr[i, j] += 2 * y_val - lambda_val * np.exp(y_val / (1+2*y_val))
-            if not j == 0:
-                ret_arr[i, j-1] -= y_val
-            if not j == m-1:
-                ret_arr[i, j+1] -= y_val
+    ret_arr = np.diff(y_arr, n=1, prepend=1) - np.diff(y_arr, n=1, append=1) - lambda_val * np.exp(y_arr / (1+2*y_arr))
     return ret_arr
 
 
 def f_deriv(y_arr, lambda_val):
-    n, m = y_arr.shape
-    ret_arr = sparse.lil_array((m, m))
-    for index in y_arr.nonzero():
-        if len(index):
-            i, j = index
-            y_val = y_arr[i, j]
-            ret_arr[j, j] += 2 - lambda_val * np.exp(y_val / (1+2*y_val)) / (1+2*y_val)**2
-            if not j == 0:
-                ret_arr[j-1, j] -= 1
-            if not j == m-1:
-                ret_arr[j+1, j] -= 1
+    length = len(y_arr)
+    data0 = -np.ones_like(y_arr)
+    data1 = 2 - lambda_val * np.exp(y_arr / (1+2*y_arr)) / (1+2*y_arr)**2
+    data2 = -np.ones_like(y_arr)
+    data = np.array([data0, data1, data2])
+    ret_arr = sparse.dia_array((data, [-1, 0, 1]), shape=(length, length)).tocsc()
     return ret_arr
 
 
 def newton(lambda_val, m_val, funct, deriv):
-    x_arr = sparse.lil_array((1,m_val))
-    while sparse.linalg.norm(funct(x_arr, lambda_val)) > 10**-5:
-        a_arr = sparse.linalg.inv(deriv(x_arr, lambda_val))
-        x_arr = x_arr - funct(x_arr, lambda_val)
-        # print(x_arr.toarray())
-    return x_arr.toarray()
+    x_arr = np.zeros(m_val)
+    norm = np.linalg.norm(funct(x_arr, lambda_val))
+    norm_list = [norm]
+    while norm > 10**-5:
+        a_arr = deriv(x_arr, lambda_val)
+        f_arr = funct(x_arr, lambda_val)
+
+        x_arr -= sparse.linalg.spsolve(a_arr, f_arr)
+        norm = np.linalg.norm(funct(x_arr, lambda_val))
+        norm_list.append(norm)
+
+        # a_inv = sparse.linalg.inv(a_arr)
+        # x_arr = x_arr - a_inv@f_arr
+    return norm_list
 
 
-print(newton(0.1, 100, f_funct, f_deriv))
+print(newton(0.5, 100, f_funct, f_deriv))
